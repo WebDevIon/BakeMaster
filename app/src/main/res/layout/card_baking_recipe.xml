@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/colorCard">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/recipe_image_iv"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:contentDescription="@string/recipe_image_content_description"
+            tools:src="@drawable/recipe_placeholder_image" />
+
+        <TextView
+            android:id="@+id/recipe_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/recipe_name_tv_placeholder"
+            android:textSize="32sp"
+            android:layout_marginStart="24dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end|bottom"
+            android:layout_marginEnd="24dp">
+
+            <TextView
+                android:id="@+id/recipe_servings_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:text="@string/recipe_servings_string"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/recipe_servings_value_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                tools:text="@string/recipe_servings_value_tv_placeholder"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -1,3 +1,31 @@
 <resources>
+    <!-- - - - - - - - - - - - - - - -
+      - Used throughout MovieCulture -
+      - - - - - - - - - - - - - - - -->
+
+    <!-- Application name -->
     <string name="app_name">Bake Master</string>
+
+
+    <!-- - - - - - - - - - - -
+      -   Used in Card View  -
+      - - - - - - - - - - - -->
+
+    <!-- Image content description text -->
+    <string name="recipe_image_content_description">Recipe image</string>
+
+    <!-- Recipe servings string -->
+    <string name="recipe_servings_string">No. of servings:</string>
+
+
+    <!-- - - - - - - - - - - - - - - -
+      - Dummy data used in Card View -
+      - - - - - - - - - - - - - - - -->
+
+    <!-- Dummy data containing a recipe name -->
+    <string name="recipe_name_tv_placeholder" translatable="false">Nutella Pie</string>
+
+    <!-- Dummy data containing a servings value -->
+    <string name="recipe_servings_value_tv_placeholder" translatable="false">8</string>
+
 </resources>

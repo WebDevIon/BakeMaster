@@ -82,6 +82,10 @@ public class Recipe {
         return servings;
     }
 
+    public String getServingsToString() {
+        return servings.toString();
+    }
+
     public void setServings(Integer servings) {
         this.servings = servings;
     }
