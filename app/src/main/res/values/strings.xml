@@ -1,6 +1,6 @@
 <resources>
     <!-- - - - - - - - - - - - - - - -
-      - Used throughout MovieCulture -
+      - Used throughout Bake Master  -
       - - - - - - - - - - - - - - - -->
 
     <!-- Application name -->
@@ -27,5 +27,23 @@
 
     <!-- Dummy data containing a servings value -->
     <string name="recipe_servings_value_tv_placeholder" translatable="false">8</string>
+
+
+    <!-- - - - - - - - - - - - - - - -
+      - Used in master list fragment -
+      - - - - - - - - - - - - - - - -->
+
+    <!-- The ingredients TextView in master list fragment -->
+    <string name="ingredients_tv">check the ingredients</string>
+
+    <!-- The list item icon content description -->
+    <string name="list_item_icon_description">List item icon</string>
+
+    <!-- - - - - - - - - - - - - - - - - - -
+      - Dummy data used in List Item Step  -
+      - - - - - - - - - - - - - - - - - - -->
+    <string name="dummy_step_short_description" translatable="false">
+        Press the crust into baking form.
+    </string>
 
 </resources>

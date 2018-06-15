@@ -49,7 +49,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_favorite_border_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_list_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -60,11 +60,11 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="e23636" />
-                            <entry key="height" value="42" />
-                            <entry key="outputName" value="ic_favorite_border" />
+                            <entry key="height" value="32" />
+                            <entry key="outputName" value="ic_ingredient_list" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\simon" />
-                            <entry key="width" value="42" />
+                            <entry key="width" value="32" />
                           </map>
                         </option>
                       </PersistentState>
