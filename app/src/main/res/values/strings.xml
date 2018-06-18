@@ -23,17 +23,17 @@
       - - - - - - - - - - - - - - - -->
 
     <!-- Dummy data containing a recipe name -->
-    <string name="recipe_name_tv_placeholder" translatable="false">Nutella Pie</string>
+    <string name="dummy_recipe_name_tv" translatable="false">Nutella Pie</string>
 
     <!-- Dummy data containing a servings value -->
-    <string name="recipe_servings_value_tv_placeholder" translatable="false">8</string>
+    <string name="dummy_recipe_servings_value_tv" translatable="false">8</string>
 
 
     <!-- - - - - - - - - - - - - - - -
-      - Used in master list fragment -
+      - Used in recipe step fragment -
       - - - - - - - - - - - - - - - -->
 
-    <!-- The ingredients TextView in master list fragment -->
+    <!-- The ingredients TextView in recipe step fragment -->
     <string name="ingredients_tv">check the ingredients</string>
 
     <!-- The list item icon content description -->
@@ -42,8 +42,21 @@
     <!-- - - - - - - - - - - - - - - - - - -
       - Dummy data used in List Item Step  -
       - - - - - - - - - - - - - - - - - - -->
+
+    <!-- The short description dummy text -->
     <string name="dummy_step_short_description" translatable="false">
         Press the crust into baking form.
     </string>
+
+
+    <!-- - - - - - - - - - - - - - - - - - - -
+      - Used in recipe step detail fragment  -
+      - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- Previous button text -->
+    <string name="previous_button_text">Previous</string>
+
+    <!-- Next button text -->
+    <string name="next_button_text">Next</string>
 
 </resources>

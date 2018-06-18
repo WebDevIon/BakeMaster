@@ -30,12 +30,16 @@ public class MainActivity extends AppCompatActivity implements
         RecipeAdapter.RecipeAdapterOnClickHandler{
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    public static final String POSITION_KEY = "Step position";
+    public static final String STEP_KEY = "Step detail";
     public static final String STEPS_KEY = "Steps";
     public static final String INGREDIENTS_KEY = "Ingredients";
+    public static final String RECIPE_NAME_KEY = "Recipe name";
+    public static final String IS_TABLET_KEY = "Tablet device";
+    static final int NO_POSITION = -1;
     private RecyclerView mRecyclerView;
     private List<Recipe> mRecipes = new ArrayList<>();
     private static float sScreenWidth;
-    public static MasterListFragment mMasterListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +92,12 @@ public class MainActivity extends AppCompatActivity implements
         // Here we create the ArrayList to store the Step and Ingredient objects.
         ArrayList<Step> steps = (ArrayList<Step>) recipe.getSteps();
         ArrayList<Ingredient> ingredients = (ArrayList<Ingredient>) recipe.getIngredients();
-        // We create a new bundle and put the parcelable ArrayList's into it.
-        Bundle b = new Bundle();
-        b.putParcelableArrayList(STEPS_KEY, steps);
-        b.putParcelableArrayList(INGREDIENTS_KEY, ingredients);
-        // We initialize the MasterListFragment Object and store it in a global variable.
-        mMasterListFragment = new MasterListFragment();
-        // We transfer the data to the fragment.
-        mMasterListFragment.setArguments(b);
-        // We start a new intent to the RecipeDetailActivity
+
+        // We start a new intent to the RecipeDetailActivity and send the recipe title to it.
         Intent intent = new Intent(getApplicationContext(), RecipeDetailActivity.class);
+        intent.putExtra(RECIPE_NAME_KEY, recipe.getName());
+        intent.putExtra(STEPS_KEY, steps);
+        intent.putExtra(INGREDIENTS_KEY, ingredients);
         startActivity(intent);
     }
 

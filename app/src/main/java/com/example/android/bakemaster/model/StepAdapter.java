@@ -29,7 +29,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
      * This is the interface responsible for handling the object clicks.
      */
     public interface StepAdapterOnClickHandler {
-        void onClick(Step step);
+        void onClick(Step step, int position);
     }
 
     /**
@@ -70,7 +70,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         public void onClick(View view) {
             int position = getAdapterPosition();
             Step step = steps.get(position);
-            clickHandler.onClick(step);
+            clickHandler.onClick(step, position);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.android.bakemaster.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,17 +20,21 @@ import com.example.android.bakemaster.model.StepAdapter;
 
 import java.util.ArrayList;
 
-public class MasterListFragment extends Fragment
-        implements StepAdapter.StepAdapterOnClickHandler{
+public class RecipeDetailFragment extends Fragment
+        implements StepAdapter.StepAdapterOnClickHandler {
 
-    public MasterListFragment(){}
+    private ArrayList<Step> steps;
+    private boolean isTabletView;
+    private String recipeName;
+
+    public RecipeDetailFragment(){}
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.fragment_master_list,
+        final View rootView = inflater.inflate(R.layout.fragment_recipe_step,
                 container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.steps_rv);
@@ -41,9 +46,12 @@ public class MasterListFragment extends Fragment
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            ArrayList<Step> steps = bundle.getParcelableArrayList(MainActivity.STEPS_KEY);
             ingredients = bundle.getParcelableArrayList(MainActivity.INGREDIENTS_KEY);
-            StepAdapter adapter = new StepAdapter(steps, getContext(), MasterListFragment.this);
+            steps = bundle.getParcelableArrayList(MainActivity.STEPS_KEY);
+            recipeName = bundle.getString(MainActivity.RECIPE_NAME_KEY);
+            isTabletView = bundle.getBoolean(MainActivity.IS_TABLET_KEY);
+
+            StepAdapter adapter = new StepAdapter(steps, getContext(), RecipeDetailFragment.this);
             recyclerView.setAdapter(adapter);
         }
 
@@ -60,7 +68,22 @@ public class MasterListFragment extends Fragment
     }
 
     @Override
-    public void onClick(Step step) {
-        Toast.makeText(getContext(), "Hello again!", Toast.LENGTH_SHORT).show();
+    public void onClick(Step step, int position) {
+        if (!isTabletView) {
+            Intent intent = new Intent(getContext(), RecipeStepDetailActivity.class);
+            intent.putExtra(MainActivity.RECIPE_NAME_KEY, recipeName);
+            intent.putExtra(MainActivity.STEPS_KEY, steps);
+            intent.putExtra(MainActivity.POSITION_KEY, position);
+            startActivity(intent);
+        } else {
+            Bundle b = new Bundle();
+            b.putParcelable(MainActivity.STEP_KEY, step);
+
+            Fragment recipeStepDetailFragment = new RecipeStepDetailFragment();
+            recipeStepDetailFragment.setArguments(b);
+            getFragmentManager().beginTransaction()
+                    .add(R.id.recipe_step_detail_fragment, recipeStepDetailFragment)
+                    .commit();
+        }
     }
 }

@@ -34,6 +34,12 @@ dependencies {
     //Picasso dependencies
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    // ExoPlayer dependencies
+    implementation 'com.google.android.exoplayer:exoplayer:2.6.1'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.6.1'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.6.1'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.6.1'
+
     // Retrofit dependencies
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
