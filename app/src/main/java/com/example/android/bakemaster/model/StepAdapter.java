@@ -78,7 +78,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
      * This method creates each ViewHolder.
      * @param parent the ViewGroup that contains these ViewHolders.
      * @param viewType the int which define which kind of viewType we want to populate.
-     * @return the StepViewHolder that holds the View for each grid item.
+     * @return the StepViewHolder that holds the View for each list item.
      */
     @NonNull
     @Override

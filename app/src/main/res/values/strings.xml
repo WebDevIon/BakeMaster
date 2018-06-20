@@ -59,4 +59,18 @@
     <!-- Next button text -->
     <string name="next_button_text">Next</string>
 
+
+    <!-- - - - - - - - - - - - - - - - - -
+      - Used in ingredient list fragment -
+      - - - - - - - - - - - - - - - - - -->
+
+    <!-- Ingredient text used to name the ingredients column -->
+    <string name="ingredient_text">Ingredient</string>
+
+    <!-- Unit text used to name the units column -->
+    <string name="unit_text">Unit</string>
+
+    <!-- Quantity text used to name the quantity column -->
+    <string name="qty_text">Qty.</string>
+
 </resources>

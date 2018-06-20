@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements
         ArrayList<Step> steps = (ArrayList<Step>) recipe.getSteps();
         ArrayList<Ingredient> ingredients = (ArrayList<Ingredient>) recipe.getIngredients();
 
-        // We start a new intent to the RecipeDetailActivity and send the recipe title to it.
+        // We start a new intent to the RecipeDetailActivity and send the recipe data to it.
         Intent intent = new Intent(getApplicationContext(), RecipeDetailActivity.class);
         intent.putExtra(RECIPE_NAME_KEY, recipe.getName());
         intent.putExtra(STEPS_KEY, steps);

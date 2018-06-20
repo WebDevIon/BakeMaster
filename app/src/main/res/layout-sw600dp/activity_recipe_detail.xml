@@ -8,7 +8,7 @@
 
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/master_list_fragment"
+        android:id="@+id/recipe_detail_fragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3.5"/>
