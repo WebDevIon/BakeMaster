@@ -1,11 +1,15 @@
 package com.example.android.bakemaster.ui;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.example.android.bakemaster.R;
@@ -22,7 +26,6 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
     private Integer position;
     private TextView nextButtonTv;
     private TextView previousButtonTv;
-    private boolean fragmentWasAdded = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +44,13 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
 
         // We create the fragment using the steps and the position that we got.
         createFragment(steps, position);
+
+        // Here we handle the case when the phone is in landscape and
+        // we want the video to be fullscreen.
+        if (getScreenWidth() < 600f && getResources().getConfiguration()
+                .orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            findViewById(R.id.step_navigation_bar).setVisibility(View.GONE);
+        }
 
         // These click listeners are placed on the next and previous buttons
         nextButtonTv.setOnClickListener(new View.OnClickListener() {
@@ -79,22 +89,13 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
         Bundle b = new Bundle();
         b.putParcelable(MainActivity.STEP_KEY, steps.get(position));
 
-        // Here we check to see if this is the first initialization of the fragment.
-        if (!fragmentWasAdded) {
-            Fragment recipeStepDetailFragment = new RecipeStepDetailFragment();
-            recipeStepDetailFragment.setArguments(b);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.recipe_step_detail_fragment, recipeStepDetailFragment)
-                    .commit();
-            fragmentWasAdded = true;
-        // If it is already initialized then we replace the fragment with a new one.
-        } else {
-            Fragment newFragment = new RecipeStepDetailFragment();
-            newFragment.setArguments(b);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.recipe_step_detail_fragment, newFragment)
-                    .commit();
-        }
+        // Here we initialize the fragment.
+        Fragment recipeStepDetailFragment = new RecipeStepDetailFragment();
+        recipeStepDetailFragment.setArguments(b);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.recipe_step_detail_fragment, recipeStepDetailFragment)
+                .commit();
+
 
         // If the Step is the last one in the ArrayList then we set the visibility of the
         // next TextView to invisible, if it is the first one in the ArrayList then we set the
@@ -108,5 +109,22 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
             nextButtonTv.setVisibility(View.VISIBLE);
             previousButtonTv.setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     * This method is used to return the shortest screen side density in dp.
+     * @return the screen density.
+     */
+    public float getScreenWidth() {
+        WindowManager windowManager = (WindowManager) getApplicationContext()
+                .getSystemService(WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float density = getResources().getDisplayMetrics().density;
+        float dpWidth = outMetrics.widthPixels / density;
+        float dpHeight = outMetrics.heightPixels / density;
+        return Math.min(dpWidth, dpHeight);
     }
 }

@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements
     static final int NO_POSITION = -1;
     private RecyclerView mRecyclerView;
     private List<Recipe> mRecipes = new ArrayList<>();
-    private static float sScreenWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +47,9 @@ public class MainActivity extends AppCompatActivity implements
 
         mRecyclerView = findViewById(R.id.recipe_rv);
 
-        // Here we make sure that we calculate the screen width only once when the app is launched.
-        if (sScreenWidth == 0.0f) {
-            sScreenWidth = getScreenWidth();
-        }
-
         // Here we check to see if the screen is wider than 600dp, if it is we will display the
         // cards on a 3 column grid.
-        if (sScreenWidth < 600f) {
+        if (getScreenWidth() < 600f) {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),
                     LinearLayoutManager.VERTICAL, false);
             mRecyclerView.setLayoutManager(layoutManager);
@@ -102,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * This method is used to return the screen density in dp.
+     * This method is used to return the shortest screen side density in dp.
      * @return the screen density.
      */
     private float getScreenWidth() {
@@ -112,8 +106,9 @@ public class MainActivity extends AppCompatActivity implements
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
 
-        float density  = getResources().getDisplayMetrics().density;
-        float dpWidth  = outMetrics.widthPixels / density;
-        return dpWidth;
+        float density = getResources().getDisplayMetrics().density;
+        float dpWidth = outMetrics.widthPixels / density;
+        float dpHeight = outMetrics.heightPixels / density;
+        return Math.min(dpWidth, dpHeight);
     }
 }
