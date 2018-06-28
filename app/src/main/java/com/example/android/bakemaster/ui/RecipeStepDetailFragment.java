@@ -37,7 +37,7 @@ public class RecipeStepDetailFragment extends Fragment {
 
     private PlayerView playerView;
     private SimpleExoPlayer player;
-    private boolean playWhenReady = true;
+    private boolean playWhenReady = false;
     private int currentWindow = 0;
     private long playbackPosition = 0;
     private String mediaUrl;

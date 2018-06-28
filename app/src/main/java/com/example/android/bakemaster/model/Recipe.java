@@ -97,5 +97,4 @@ public class Recipe {
     public void setImage(String image) {
         this.image = image;
     }
-
 }

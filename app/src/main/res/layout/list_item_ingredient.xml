@@ -15,7 +15,7 @@
         android:layout_weight="3"
         android:textSize="18sp"
         android:gravity="center_vertical|start"
-        tools:text="Graham Cracker crumbs"/>
+        tools:text="@string/dummy_ingredient_name"/>
 
     <TextView
         android:id="@+id/ingredient_unit_tv"
@@ -25,7 +25,7 @@
         android:textSize="18sp"
         android:layout_marginStart="8dp"
         android:gravity="center_vertical|end"
-        tools:text="CUP"/>
+        tools:text="@string/dummy_ingredient_unit"/>
 
     <TextView
         android:id="@+id/ingredient_qty_tv"
@@ -35,6 +35,6 @@
         android:textSize="18sp"
         android:layout_marginStart="8dp"
         android:gravity="center_vertical|end"
-        tools:text="2"/>
+        tools:text="@string/dummy_ingredient_qty"/>
 
 </LinearLayout>

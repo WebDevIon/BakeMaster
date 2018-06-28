@@ -73,4 +73,26 @@
     <!-- Quantity text used to name the quantity column -->
     <string name="qty_text">Qty.</string>
 
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - -
+      - Dummy data used in ingredient list fragment  -
+      - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- Ingredient dummy name -->
+    <string name="dummy_ingredient_name">Graham Cracker crumbs</string>
+
+    <!-- Ingredient dummy unit -->
+    <string name="dummy_ingredient_unit">CUP</string>
+
+    <!-- Ingredient dummy quantity -->
+    <string name="dummy_ingredient_qty">2</string>
+
+
+
+
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
+    <string name="widget_configure_instruction_text">Choose the recipe that you want to display the ingredients for.</string>
+
 </resources>

@@ -132,7 +132,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.recipeName.setText(recipes.get(position).getName());
         holder.servingsNumber.setText(recipes.get(position).getServingsToString());
 
-        // TODO: Check the db to see if the recipe is saved, if it is set the favorite toggle button
+        // TODO: Check the db to see if the recipe is saved, if it is set the favorite toggle button.
         // drawable to ic_favorite, if it is not set it to ic_favorite_border.
         holder.favoriteToggleButton.setChecked(false);
         holder.favoriteToggleButton.setBackgroundDrawable(ContextCompat.getDrawable
@@ -178,5 +178,4 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             default: return R.drawable.recipe_placeholder_image;
         }
     }
-
 }
