@@ -1,18 +1,26 @@
 package com.example.android.bakemaster.model;
 
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.android.bakemaster.R;
+import com.example.android.bakemaster.database.AppExecutors;
+import com.example.android.bakemaster.database.RecipeDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -29,6 +37,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private final static String LOG_TAG = RecipeAdapter.class.getSimpleName();
     private final Context context;
     private final List<Recipe> recipes;
+    private final LifecycleOwner lifecycleOwner;
+    private RecipeDatabase db;
     final private RecipeAdapterOnClickHandler clickHandler;
 
     /**
@@ -45,10 +55,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
      * @param clickHandler the click handler.
      */
     public RecipeAdapter(List<Recipe> recipes, Context context,
-                         RecipeAdapterOnClickHandler clickHandler) {
+                         RecipeAdapterOnClickHandler clickHandler, LifecycleOwner lifecycleOwner) {
         this.recipes = recipes;
         this.context = context;
         this.clickHandler = clickHandler;
+        this.lifecycleOwner = lifecycleOwner;
+        db = RecipeDatabase.getInstance(context);
+
     }
 
     /**
@@ -109,8 +122,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     @Override
     public void onBindViewHolder(@NonNull final RecipeViewHolder holder, int position) {
         // The Picasso library is used to set the content of the ImageView.
+        final Recipe recipe = recipes.get(position);
         int placeholderImage = randomizePlaceholderImage();
-        if (recipes.get(position).getImage().isEmpty()) {
+        if (recipe.getImage().isEmpty()) {
             Picasso.get()
                     .load(placeholderImage)
                     .placeholder(placeholderImage)
@@ -120,7 +134,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                     .into(holder.recipeImage);
         } else {
             Picasso.get()
-                    .load(recipes.get(position).getImage())
+                    .load(recipe.getImage())
                     .placeholder(placeholderImage)
                     .error(placeholderImage)
                     .fit()
@@ -129,26 +143,23 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
 
         // Here we set the name and the number of servings of each recipe.
-        holder.recipeName.setText(recipes.get(position).getName());
-        holder.servingsNumber.setText(recipes.get(position).getServingsToString());
+        holder.recipeName.setText(recipe.getName());
+        holder.servingsNumber.setText(recipe.getServingsToString());
 
-        // TODO: Check the db to see if the recipe is saved, if it is set the favorite toggle button.
-        // drawable to ic_favorite, if it is not set it to ic_favorite_border.
-        holder.favoriteToggleButton.setChecked(false);
-        holder.favoriteToggleButton.setBackgroundDrawable(ContextCompat.getDrawable
-                (context, R.drawable.ic_favorite_border));
+        // Check the db to see if the recipe is saved, if it is we set the favorite toggle button
+        // drawable to ic_favorite, if it is not we set it to ic_favorite_border.
+        retrieveRecipe(recipe.getName(), holder);
+
         holder.favoriteToggleButton
                 .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    holder.favoriteToggleButton.setChecked(true);
-                    holder.favoriteToggleButton.setBackgroundDrawable(ContextCompat.getDrawable
-                            (context, R.drawable.ic_favorite));
+                    saveRecipeInDatabase(recipe);
+                    checkFavButton(holder);
                 } else {
-                    holder.favoriteToggleButton.setChecked(false);
-                    holder.favoriteToggleButton.setBackgroundDrawable(ContextCompat.getDrawable
-                            (context, R.drawable.ic_favorite_border));
+                    removeRecipeFromDatabase(recipe);
+                    uncheckFavButton(holder);
                 }
             }
         });
@@ -177,5 +188,75 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             case 3: return R.drawable.recipe_placeholder_image_3;
             default: return R.drawable.recipe_placeholder_image;
         }
+    }
+
+    /**
+     * With this method we save the recipe in the database.
+     * @param recipe the recipe object that we save in the database.
+     */
+    private void saveRecipeInDatabase(final Recipe recipe) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                db.recipeDao().insertTask(recipe);
+                Log.d(LOG_TAG, "Added recipe.");
+            }
+        });
+        Toast.makeText(context, "Added to favorites!", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * With this method we delete the recipe from the database.
+     * @param recipe the recipe object that we delete from the database.
+     */
+    private void removeRecipeFromDatabase(final Recipe recipe) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                db.recipeDao().deleteTask(recipe);
+                Log.d(LOG_TAG, "Removed recipe.");
+            }
+        });
+        Toast.makeText(context, "Removed from favorites!", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Method used to retrieve recipes from the database.
+     * @param recipeName the name of the recipe that we want to retrieve.
+     * @param holder the ViewHolder that is holding the retrieved recipe.
+     */
+    private void retrieveRecipe(String recipeName, final RecipeViewHolder holder) {
+        Log.d(LOG_TAG, "Retrieved recipe.");
+        final LiveData<Recipe> recipe = db.recipeDao().loadRecipe(recipeName);
+        recipe.observe(lifecycleOwner, new Observer<Recipe>() {
+            @Override
+            public void onChanged(@Nullable Recipe recipeEntry) {
+                if (recipeEntry != null) {
+                    checkFavButton(holder);
+                } else {
+                    uncheckFavButton(holder);
+                }
+            }
+        });
+    }
+
+    /**
+     * Method used to check the toggle button when it is clicked.
+     * @param holder the ViewHolder that has the clicked button.
+     */
+    private void checkFavButton(RecipeViewHolder holder) {
+        holder.favoriteToggleButton.setChecked(true);
+        holder.favoriteToggleButton.setBackgroundDrawable(ContextCompat.getDrawable
+                (context, R.drawable.ic_favorite));
+    }
+
+    /**
+     * Method used to uncheck the toggle button when it is clicked.
+     * @param holder the ViewHolder that has the clicked button.
+     */
+    private void uncheckFavButton(RecipeViewHolder holder) {
+        holder.favoriteToggleButton.setChecked(false);
+        holder.favoriteToggleButton.setBackgroundDrawable(ContextCompat.getDrawable
+                (context, R.drawable.ic_favorite_border));
     }
 }

@@ -1,13 +1,18 @@
 
 package com.example.android.bakemaster.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+@Entity(tableName = "recipes")
 public class Recipe {
 
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     private Integer id;
