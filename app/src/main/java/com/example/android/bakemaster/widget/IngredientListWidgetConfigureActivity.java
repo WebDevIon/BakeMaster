@@ -1,4 +1,4 @@
-package com.example.android.bakemaster;
+package com.example.android.bakemaster.widget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.android.bakemaster.R;
 import com.example.android.bakemaster.model.Ingredient;
 import com.example.android.bakemaster.model.Recipe;
 import com.example.android.bakemaster.rest.ApiClient;
@@ -32,7 +33,7 @@ import retrofit2.Response;
 public class IngredientListWidgetConfigureActivity extends Activity {
 
     private static final String LOG_TAG = IngredientListWidgetConfigureActivity.class.getSimpleName();
-    private static final String PREFS_NAME = "com.example.android.bakemaster.IngredientListWidget";
+    private static final String PREFS_NAME = "com.example.android.bakemaster.widget.IngredientListWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     ListView mRecipeListView;

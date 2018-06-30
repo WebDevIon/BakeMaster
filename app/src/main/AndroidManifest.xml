@@ -22,7 +22,7 @@
         <activity android:name=".ui.RecipeStepDetailActivity" />
         <activity android:name=".ui.RecipeIngredientActivity" />
 
-        <receiver android:name=".IngredientListWidget">
+        <receiver android:name=".widget.IngredientListWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -32,7 +32,7 @@
                 android:resource="@xml/ingredient_list_widget_info" />
         </receiver>
 
-        <activity android:name=".IngredientListWidgetConfigureActivity">
+        <activity android:name=".widget.IngredientListWidgetConfigureActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

@@ -1,4 +1,4 @@
-package com.example.android.bakemaster;
+package com.example.android.bakemaster.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 
+import com.example.android.bakemaster.R;
 import com.example.android.bakemaster.ui.MainActivity;
 
 import java.util.Set;
