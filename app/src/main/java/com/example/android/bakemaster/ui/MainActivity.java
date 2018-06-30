@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements
                                    @NonNull Response<List<Recipe>> response) {
                 mRecipes = response.body();
                 RecipeAdapter adapter = new RecipeAdapter(mRecipes, getApplicationContext(),
-                        MainActivity.this, MainActivity.this);
+                        MainActivity.this, MainActivity.this, MainActivity.this);
                 mRecyclerView.setAdapter(adapter);
             }
 
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e(LOG_TAG, t.toString());
             }
         });
+
     }
 
     /**

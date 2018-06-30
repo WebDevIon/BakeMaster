@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class RecipeStepDetailActivity extends AppCompatActivity {
 
     private ArrayList<Step> steps = new ArrayList<>();
-    private Integer position;
+    private static Integer position;
     private TextView nextButtonTv;
     private TextView previousButtonTv;
 
@@ -40,7 +40,9 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         setTitle(intent.getStringExtra(MainActivity.RECIPE_NAME_KEY));
         steps = intent.getParcelableArrayListExtra(MainActivity.STEPS_KEY);
-        position = intent.getIntExtra(MainActivity.POSITION_KEY, MainActivity.NO_POSITION);
+        if (savedInstanceState == null) {
+            position = intent.getIntExtra(MainActivity.POSITION_KEY, MainActivity.NO_POSITION);
+        }
 
         // We create the fragment using the steps and the position that we got.
         createFragment(steps, position);

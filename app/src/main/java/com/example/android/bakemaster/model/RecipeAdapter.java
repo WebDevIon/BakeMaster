@@ -1,11 +1,12 @@
 package com.example.android.bakemaster.model;
 
 import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.android.bakemaster.R;
@@ -38,6 +38,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private final Context context;
     private final List<Recipe> recipes;
     private final LifecycleOwner lifecycleOwner;
+    private final FragmentActivity activity;
     private RecipeDatabase db;
     final private RecipeAdapterOnClickHandler clickHandler;
 
@@ -54,12 +55,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
      * @param context the context of the application.
      * @param clickHandler the click handler.
      */
-    public RecipeAdapter(List<Recipe> recipes, Context context,
-                         RecipeAdapterOnClickHandler clickHandler, LifecycleOwner lifecycleOwner) {
+    public RecipeAdapter(List<Recipe> recipes, Context context, RecipeAdapterOnClickHandler clickHandler,
+                         LifecycleOwner lifecycleOwner, FragmentActivity activity) {
         this.recipes = recipes;
         this.context = context;
         this.clickHandler = clickHandler;
         this.lifecycleOwner = lifecycleOwner;
+        this.activity = activity;
         db = RecipeDatabase.getInstance(context);
 
     }
@@ -202,7 +204,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 Log.d(LOG_TAG, "Added recipe.");
             }
         });
-        Toast.makeText(context, "Added to favorites!", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -217,7 +218,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 Log.d(LOG_TAG, "Removed recipe.");
             }
         });
-        Toast.makeText(context, "Removed from favorites!", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -226,14 +226,18 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
      * @param holder the ViewHolder that is holding the retrieved recipe.
      */
     private void retrieveRecipe(String recipeName, final RecipeViewHolder holder) {
-        Log.d(LOG_TAG, "Retrieved recipe.");
-        final LiveData<Recipe> recipe = db.recipeDao().loadRecipe(recipeName);
-        recipe.observe(lifecycleOwner, new Observer<Recipe>() {
+
+        final MainViewModel viewModel =
+                ViewModelProviders.of(activity).get(MainViewModel.class);
+
+        viewModel.getRecipe(recipeName).observe(lifecycleOwner, new Observer<Recipe>() {
             @Override
             public void onChanged(@Nullable Recipe recipeEntry) {
                 if (recipeEntry != null) {
+                    Log.d(LOG_TAG, "Retrieved recipe checked.");
                     checkFavButton(holder);
                 } else {
+                    Log.d(LOG_TAG, "Retrieved recipe unchecked.");
                     uncheckFavButton(holder);
                 }
             }
