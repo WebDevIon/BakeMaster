@@ -88,11 +88,14 @@
     <string name="dummy_ingredient_qty">2</string>
 
 
+    <!-- - - - - - - - - - -
+      - Used in the widget -
+      - - - - - - - - - - -->
 
+    <!-- Widget error text -->
+    <string name="appwidget_error_text">Error, please recreate the widget</string>
 
-    <string name="appwidget_text">Error, please recreate the widget</string>
-    <string name="configure">Configure</string>
-    <string name="add_widget">Add widget</string>
+    <!-- Recipe selection error -->
     <string name="widget_configure_instruction_text">Choose the recipe that you want to display the ingredients for.</string>
 
 </resources>

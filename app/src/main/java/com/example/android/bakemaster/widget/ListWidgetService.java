@@ -89,7 +89,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             rv.setTextViewText(R.id.widget_list_item, mRecipe.getIngredients()
                     .get(position).getIngredient());
         } else {
-            rv.setTextViewText(R.id.widget_list_item, "No data");
+            rv.setTextViewText(R.id.widget_list_item, mContext.getString(R.string.appwidget_error_text));
             Log.d(LOG_TAG, "Ingredient missing.");
         }
 

@@ -90,7 +90,7 @@ public class IngredientListWidgetConfigureActivity extends Activity {
         if (recipeName != null) {
             return recipeName;
         } else {
-            return context.getString(R.string.appwidget_text);
+            return context.getString(R.string.appwidget_error_text);
         }
     }
 
