@@ -1,17 +1,12 @@
 package com.example.android.bakemaster.widget;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.ListView;
 import android.widget.RemoteViews;
 
 import com.example.android.bakemaster.R;
-import com.example.android.bakemaster.ui.MainActivity;
-
-import java.util.Set;
 
 /**
  * Implementation of App Widget functionality.
@@ -19,22 +14,14 @@ import java.util.Set;
  */
 public class IngredientListWidget extends AppWidgetProvider {
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    static void updateAppWidget(final Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
-        Set<String> widgetText = IngredientListWidgetConfigureActivity
-                .loadTitlePref(context, appWidgetId);
+        Intent intent = new Intent(context, ListWidgetService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredient_list_widget);
-
-        ListView ingredientsListView;
-
-        //views.setTextViewText(R.id.appwidget_text, widgetText);
-
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-        views.setOnClickPendingIntent(R.id.widget_ingredient_lv, pendingIntent);
+        views.setRemoteAdapter(R.id.widget_ingredient_lv, intent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -52,7 +39,7 @@ public class IngredientListWidget extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
-            IngredientListWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
+            IngredientListWidgetConfigureActivity.deleteRecipePref(context, appWidgetId);
         }
     }
 

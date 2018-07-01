@@ -24,6 +24,9 @@ public interface RecipeDao {
     @Query("SELECT * FROM recipes WHERE name LIKE :recipeName")
     LiveData<Recipe> loadRecipe(String recipeName);
 
+    @Query("SELECT * FROM recipes WHERE name LIKE :recipeName")
+    Recipe loadRecipeObject(String recipeName);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertTask(Recipe recipe);
 

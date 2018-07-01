@@ -14,14 +14,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.android.bakemaster.R;
-import com.example.android.bakemaster.model.Ingredient;
+import com.example.android.bakemaster.database.AppExecutors;
+import com.example.android.bakemaster.database.RecipeDatabase;
 import com.example.android.bakemaster.model.Recipe;
 import com.example.android.bakemaster.rest.ApiClient;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,27 +33,33 @@ public class IngredientListWidgetConfigureActivity extends Activity {
 
     private static final String LOG_TAG = IngredientListWidgetConfigureActivity.class.getSimpleName();
     private static final String PREFS_NAME = "com.example.android.bakemaster.widget.IngredientListWidget";
-    private static final String PREF_PREFIX_KEY = "appwidget_";
+    private static final String PREF_RECIPE_NAME_PREFIX_KEY = "appwidget_recipe_name_";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     ListView mRecipeListView;
     List<Recipe> mRecipes = new ArrayList<>();
+    private RecipeDatabase mDb;
 
     AdapterView.OnItemClickListener mOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
             final Context context = IngredientListWidgetConfigureActivity.this;
 
-            // When the button is clicked, store the string locally
-            List<Ingredient> ingredients = mRecipes.get(position).getIngredients();
-            Set<String> widgetText = new HashSet<>();
-            for (Ingredient ingredient : ingredients) {
-                widgetText.add(ingredient.getIngredient());
-            }
-            saveTitlePref(context, mAppWidgetId, widgetText);
+            // When the view is clicked, store the string locally
+            final String recipeName = mRecipes.get(position).getName();
+            saveRecipeData(context, mAppWidgetId, recipeName);
 
-            // Here we add the ingredient list of objects that we pass in the intent.
-            ArrayList<Ingredient> ingredientList=
-                    (ArrayList<Ingredient>) mRecipes.get(position).getIngredients();
+            // The recipe that was clicked will be stored in the database.
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (mDb.recipeDao().loadRecipeObject(recipeName) == null) {
+                        mDb.recipeDao().insertTask(mRecipes.get(position));
+                        Log.d(LOG_TAG, "Added recipe.");
+                    } else {
+                        Log.d(LOG_TAG, "Existing recipe.");
+                    }
+                }
+            });
 
             // It is the responsibility of the configuration activity to update the app widget
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -73,30 +78,26 @@ public class IngredientListWidgetConfigureActivity extends Activity {
     }
 
     // Write the prefix to the SharedPreferences object for this widget
-    static void saveTitlePref(Context context, int appWidgetId, Set<String> text) {
+    static void saveRecipeData(Context context, int appWidgetId, String name) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        //prefs.putString(PREF_PREFIX_KEY + appWidgetId, text);
-        prefs.putStringSet(PREF_PREFIX_KEY + appWidgetId, text);
+        prefs.putString(PREF_RECIPE_NAME_PREFIX_KEY + appWidgetId, name);
         prefs.apply();
     }
 
-    // Read the prefix from the SharedPreferences object for this widget.
-    // If there is no preference saved, get the default from a resource
-    static Set<String> loadTitlePref(Context context, int appWidgetId) {
+    static String loadRecipeName(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        Set<String> titleValue = prefs.getStringSet(PREF_PREFIX_KEY + appWidgetId, null);
-        if (titleValue != null) {
-            return titleValue;
+        String recipeName = prefs.getString(PREF_RECIPE_NAME_PREFIX_KEY + appWidgetId, null);
+        if (recipeName != null) {
+            return recipeName;
         } else {
-            Set<String> baseline = new HashSet<String>();
-            baseline.add(context.getString(R.string.appwidget_text));
-            return baseline;
+            return context.getString(R.string.appwidget_text);
         }
     }
 
-    static void deleteTitlePref(Context context, int appWidgetId) {
+    static void deleteRecipePref(Context context, int appWidgetId) {
+        Log.d(LOG_TAG, "Recipe with id: " + appWidgetId + " deleted!");
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId);
+        prefs.remove(PREF_RECIPE_NAME_PREFIX_KEY + appWidgetId);
         prefs.apply();
     }
 
@@ -110,6 +111,7 @@ public class IngredientListWidgetConfigureActivity extends Activity {
 
         setContentView(R.layout.ingredient_list_widget_configure);
         mRecipeListView = findViewById(R.id.recipe_list_widget_config_lv);
+        mDb = RecipeDatabase.getInstance(getApplicationContext());
 
         ApiClient.getRecipes().enqueue(new Callback<List<Recipe>>() {
 
@@ -122,7 +124,7 @@ public class IngredientListWidgetConfigureActivity extends Activity {
                     for (Recipe recipe : mRecipes) {
                         recipeNames.add(recipe.getName());
                     }
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                             getApplicationContext(), R.layout.list_item_widget, recipeNames);
                     mRecipeListView.setAdapter(arrayAdapter);
                     mRecipeListView.setOnItemClickListener(mOnClickListener);
@@ -149,7 +151,7 @@ public class IngredientListWidgetConfigureActivity extends Activity {
             return;
         }
 
-        //mAppWidgetText.setText(loadTitlePref(IngredientListWidgetConfigureActivity.this, mAppWidgetId));
     }
+
 }
 

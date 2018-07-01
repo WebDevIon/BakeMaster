@@ -90,7 +90,7 @@
 
 
 
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="appwidget_text">Error, please recreate the widget</string>
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
     <string name="widget_configure_instruction_text">Choose the recipe that you want to display the ingredients for.</string>
