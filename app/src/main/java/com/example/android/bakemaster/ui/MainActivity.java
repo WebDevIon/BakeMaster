@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements
         RecipeAdapter.RecipeAdapterOnClickHandler{
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    public static final String POSITION_KEY = "Step position";
+    public static final String POSITION_KEY = "Position";
+    public static final String RECIPES_KEY = "Recipes";
     public static final String STEP_KEY = "Step detail";
     public static final String STEPS_KEY = "Steps";
     public static final String INGREDIENTS_KEY = "Ingredients";
@@ -83,8 +84,9 @@ public class MainActivity extends AppCompatActivity implements
      * @param recipe the recipe that was clicked.
      */
     @Override
-    public void onClick(Recipe recipe) {
+    public void onClick(Recipe recipe, int position) {
         // Here we create the ArrayList to store the Step and Ingredient objects.
+        ArrayList<Recipe> recipes = (ArrayList<Recipe>) mRecipes;
         ArrayList<Step> steps = (ArrayList<Step>) recipe.getSteps();
         ArrayList<Ingredient> ingredients = (ArrayList<Ingredient>) recipe.getIngredients();
 
@@ -93,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra(RECIPE_NAME_KEY, recipe.getName());
         intent.putExtra(STEPS_KEY, steps);
         intent.putExtra(INGREDIENTS_KEY, ingredients);
+        intent.putExtra(RECIPES_KEY, recipes);
+        intent.putExtra(POSITION_KEY, position);
         startActivity(intent);
     }
 

@@ -98,7 +98,6 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
                 .replace(R.id.recipe_step_detail_fragment, recipeStepDetailFragment)
                 .commit();
 
-
         // If the Step is the last one in the ArrayList then we set the visibility of the
         // next TextView to invisible, if it is the first one in the ArrayList then we set the
         // visibility of the previous TextView to invisible. If the Step object is in any other

@@ -3,7 +3,7 @@
     android:configure="com.example.android.bakemaster.widget.IngredientListWidgetConfigureActivity"
     android:initialKeyguardLayout="@layout/ingredient_list_widget"
     android:initialLayout="@layout/ingredient_list_widget"
-    android:minHeight="120dp"
+    android:minHeight="200dp"
     android:minWidth="200dp"
     android:previewImage="@mipmap/ic_launcher"
     android:resizeMode="horizontal|vertical"

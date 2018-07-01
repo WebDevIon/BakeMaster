@@ -46,7 +46,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
      * This is the interface responsible for handling the object clicks.
      */
     public interface RecipeAdapterOnClickHandler {
-        void onClick(Recipe recipe);
+        void onClick(Recipe recipe, int position);
     }
 
     /**
@@ -97,7 +97,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         public void onClick(View view) {
             int position = getAdapterPosition();
             Recipe recipe = recipes.get(position);
-            clickHandler.onClick(recipe);
+            clickHandler.onClick(recipe, position);
         }
     }
 
