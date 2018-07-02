@@ -112,6 +112,7 @@ public class RecipeDetailFragment extends Fragment
             intent.putExtra(MainActivity.POSITION_KEY, position);
             startActivity(intent);
         } else {
+            RecipeStepDetailFragment.upWasClicked = RecipeStepDetailActivity.NO_VALUE;
             // If the device is a tablet we put the extra data we needed by the
             // RecipeStepDetailFragment in a bundle and we create a new fragment.
             Bundle b = new Bundle();

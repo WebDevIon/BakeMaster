@@ -16,11 +16,15 @@ public class IngredientListWidget extends AppWidgetProvider {
 
     static void updateAppWidget(final Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
+        String recipeName = IngredientListWidgetConfigureActivity
+                .loadRecipeName(context, appWidgetId);
+
         Intent intent = new Intent(context, ListWidgetService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredient_list_widget);
+        views.setTextViewText(R.id.widget_recipe_title, recipeName);
         views.setRemoteAdapter(R.id.widget_ingredient_lv, intent);
 
         // Instruct the widget manager to update the widget

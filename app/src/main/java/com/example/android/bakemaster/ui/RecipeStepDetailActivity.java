@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,6 +23,13 @@ import java.util.ArrayList;
  */
 public class RecipeStepDetailActivity extends AppCompatActivity {
 
+    private static final String LOG_TAG = RecipeStepDetailActivity.class.getSimpleName();
+    public static final String PREVIOUS_KEY = "previous";
+    public static final int PREVIOUS_VALUE = 2;
+    public static final String NEXT_KEY = "next";
+    public static final int NEXT_VALUE = 1;
+    public static final int NO_VALUE = -1;
+    public static final int DEFAULT_VALUE = 0;
     private ArrayList<Step> steps = new ArrayList<>();
     private static Integer position;
     private TextView nextButtonTv;
@@ -45,7 +53,8 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
         }
 
         // We create the fragment using the steps and the position that we got.
-        createFragment(steps, position);
+        createFragment(steps, position, false, false);
+        Log.d(LOG_TAG, "Fragment created at position 1");
 
         // Here we handle the case when the phone is in landscape and
         // we want the video to be fullscreen.
@@ -62,7 +71,8 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
                 // if it is not then we move to the next element and recreate the fragment.
                 if (position != MainActivity.NO_POSITION && position < steps.size() - 1) {
                     position++;
-                    createFragment(steps, position);
+                    createFragment(steps, position, true, false);
+                    Log.d(LOG_TAG, "Fragment created at position 2");
                 }
             }
         });
@@ -74,10 +84,14 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
                 // if it is not then we move to the previous element and recreate the fragment.
                 if (position != MainActivity.NO_POSITION && position > 0) {
                     position--;
-                    createFragment(steps, position);
+                    createFragment(steps, position, false, true);
+                    Log.d(LOG_TAG, "Fragment created at position 3");
                 }
             }
         });
+
+        //Here we provide navigation to the parent activity.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -87,9 +101,23 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
      * @param steps the ArrayList of Step objects.
      * @param position the position of the current Step object in the ArrayList.
      */
-    public void createFragment(ArrayList<Step> steps, int position) {
+    public void createFragment(ArrayList<Step> steps, int position,
+                               boolean nextWasClicked, boolean previousWasClicked) {
         Bundle b = new Bundle();
         b.putParcelable(MainActivity.STEP_KEY, steps.get(position));
+        // If the next or previous buttons were clicked we send a value to the fragment
+        // reset the player position, window and play when ready state.
+        if (nextWasClicked) {
+            b.putInt(NEXT_KEY, NEXT_VALUE);
+        } else {
+            b.putInt(NEXT_KEY, NO_VALUE);
+        }
+
+        if (previousWasClicked) {
+            b.putInt(PREVIOUS_KEY, PREVIOUS_VALUE);
+        } else {
+            b.putInt(PREVIOUS_KEY, NO_VALUE);
+        }
 
         // Here we initialize the fragment.
         Fragment recipeStepDetailFragment = new RecipeStepDetailFragment();

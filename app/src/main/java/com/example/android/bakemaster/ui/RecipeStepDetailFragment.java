@@ -37,14 +37,21 @@ import com.squareup.picasso.Picasso;
  */
 public class RecipeStepDetailFragment extends Fragment {
 
+    private static final String LOG_TAG = RecipeStepDetailFragment.class.getSimpleName();
+    public static final String PLAY_WHEN_READY_KEY = "play";
+    public static final String CURRENT_POSITION_KEY = "position";
+    public static final String CURRENT_WINDOW_KEY = "window";
     private PlayerView playerView;
     private SimpleExoPlayer player;
     private ImageView playerThumbnail;
-    private boolean playWhenReady = false;
-    private int currentWindow = 0;
-    private long playbackPosition = 0;
+    private static boolean playWhenReady;
+    private static int currentWindow;
+    private static long playbackPosition;
     private String mediaUrl;
     private String thumbnailUrl;
+    private static int nextWasClicked;
+    private static int previousWasClicked;
+    public static int upWasClicked;
 
     public RecipeStepDetailFragment(){}
 
@@ -55,11 +62,27 @@ public class RecipeStepDetailFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_step_detail,
                 container, false);
 
+        // Here we restore the position, window, and play when ready state of the player
+        // if the screen was rotated.
+        if (savedInstanceState != null) {
+            playWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY_KEY);
+            playbackPosition = savedInstanceState.getLong(CURRENT_POSITION_KEY);
+            currentWindow = savedInstanceState.getInt(CURRENT_WINDOW_KEY);
+        }
+
         // Here we get the step passed by the RecipeStepDetailActivity and we set the
         // data to each view.
         Bundle bundle = getArguments();
         if (bundle != null) {
             Step step = bundle.getParcelable(MainActivity.STEP_KEY);
+
+            // Here we check to see if it is still the same fragment, we only get
+            // the values if the fragment is different.
+            if (savedInstanceState == null) {
+                nextWasClicked = bundle.getInt(RecipeStepDetailActivity.NEXT_KEY);
+                previousWasClicked = bundle.getInt(RecipeStepDetailActivity.PREVIOUS_KEY);
+            }
+
             TextView recipeStepInstruction = rootView.findViewById(R.id.recipe_step_instruction_tv);
             recipeStepInstruction.setText(step.getDescription());
 
@@ -67,6 +90,22 @@ public class RecipeStepDetailFragment extends Fragment {
             mediaUrl = step.getVideoURL();
             thumbnailUrl = step.getThumbnailURL();
             playerThumbnail = rootView.findViewById(R.id.exo_artwork);
+
+            // Here we reset the position, window and play when ready state of the player
+            // if the next, previous or up buttons were clicked.
+            if (nextWasClicked == RecipeStepDetailActivity.NEXT_VALUE
+                    || previousWasClicked == RecipeStepDetailActivity.PREVIOUS_VALUE
+                    || upWasClicked == RecipeStepDetailActivity.NO_VALUE) {
+                playbackPosition = 0;
+                playWhenReady = false;
+                currentWindow = 0;
+                nextWasClicked = RecipeStepDetailActivity.NO_VALUE;
+                previousWasClicked = RecipeStepDetailActivity.NO_VALUE;
+                upWasClicked = RecipeStepDetailActivity.DEFAULT_VALUE;
+            } else {
+                nextWasClicked = RecipeStepDetailActivity.NO_VALUE;
+                previousWasClicked = RecipeStepDetailActivity.NO_VALUE;
+            }
 
             // Here we handle the case when the phone is in landscape and we
             // want the video to be fullscreen.
@@ -142,13 +181,29 @@ public class RecipeStepDetailFragment extends Fragment {
     }
 
     /**
+     * Here we save the position, window and play when ready state of the player.
+     * @param outState the bundle containing the saved player variables.
+     */
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Boolean pwr = player.getPlayWhenReady();
+        outState.putBoolean(PLAY_WHEN_READY_KEY, pwr);
+        long pp = player.getCurrentPosition();
+        outState.putLong(CURRENT_POSITION_KEY, pp);
+        int cw = player.getCurrentWindowIndex();
+        outState.putInt(CURRENT_WINDOW_KEY, cw);
+    }
+
+
+
+    /**
      * Method used to initialize the player.
      * @param mediaUrl the URL of the video.
      * @param thumbnailUrl the URL of the thumbnail.
      */
     private void initializePlayer(String mediaUrl, String thumbnailUrl) {
-
-        if (player == null) {
             player = ExoPlayerFactory.newSimpleInstance(
                     new DefaultRenderersFactory(getContext()),
                     new DefaultTrackSelector(), new DefaultLoadControl());
@@ -163,9 +218,7 @@ public class RecipeStepDetailFragment extends Fragment {
 
             Uri uri = Uri.parse(mediaUrl);
             MediaSource mediaSource = buildMediaSource(uri);
-            player.prepare(mediaSource, true, false);
-        }
-
+            player.prepare(mediaSource, false, false);
     }
 
     /**

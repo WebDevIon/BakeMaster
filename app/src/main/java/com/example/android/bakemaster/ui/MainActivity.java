@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String INGREDIENTS_KEY = "Ingredients";
     public static final String RECIPE_NAME_KEY = "Recipe name";
     public static final String IS_TABLET_KEY = "Tablet device";
+    static final String SHARED_PREFERENCE = "com.example.android.bakemaster.ui.RecipeDetailActivity";
     static final int NO_POSITION = -1;
     private RecyclerView mRecyclerView;
     private List<Recipe> mRecipes = new ArrayList<>();

@@ -37,5 +37,8 @@ public class RecipeIngredientActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.ingredients_list_fragment, recipeIngredientFragment)
                 .commit();
+
+        //Here we provide navigation to the parent activity.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

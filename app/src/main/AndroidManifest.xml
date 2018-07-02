@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,9 +19,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.RecipeDetailActivity" />
-        <activity android:name=".ui.RecipeStepDetailActivity" />
-        <activity android:name=".ui.RecipeIngredientActivity" />
+
+        <activity
+            android:name=".ui.RecipeDetailActivity"
+            android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.RecipeStepDetailActivity"
+            android:parentActivityName=".ui.RecipeDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.RecipeDetailActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.RecipeIngredientActivity"
+            android:parentActivityName=".ui.RecipeDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.RecipeDetailActivity" />
+        </activity>
 
         <receiver android:name=".widget.IngredientListWidget">
             <intent-filter>

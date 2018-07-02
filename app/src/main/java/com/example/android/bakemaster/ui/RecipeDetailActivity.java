@@ -1,6 +1,7 @@
 package com.example.android.bakemaster.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,16 +13,21 @@ import com.example.android.bakemaster.R;
 import com.example.android.bakemaster.model.Ingredient;
 import com.example.android.bakemaster.model.Recipe;
 import com.example.android.bakemaster.model.Step;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * In this class we create the activity that will hold the recipe detail fragment.
  */
 public class RecipeDetailActivity extends AppCompatActivity{
 
+    private static final String LOG_TAG = RecipeDetailActivity.class.getSimpleName();
     private boolean isTablet;
-    private static Integer position;
+    private Integer position;
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private TextView nextButtonTv;
     private TextView previousButtonTv;
@@ -43,8 +49,24 @@ public class RecipeDetailActivity extends AppCompatActivity{
         // Here we get the data transferred from MainActivity
         Intent intent = getIntent();
         recipes = intent.getParcelableArrayListExtra(MainActivity.RECIPES_KEY);
+
         if (savedInstanceState == null) {
             position = intent.getIntExtra(MainActivity.POSITION_KEY, MainActivity.NO_POSITION);
+        }
+
+        // If the position or the recipes are null we restore them from the SharedPreferences.
+        if (position == null || recipes == null) {
+            SharedPreferences sharedPreferences =
+                    getSharedPreferences(MainActivity.SHARED_PREFERENCE, 0);
+            position = sharedPreferences.getInt(MainActivity.POSITION_KEY, MainActivity.NO_POSITION);
+            String recipesString = sharedPreferences.getString(MainActivity.RECIPES_KEY, "");
+            if (!(recipesString.isEmpty())) {
+                Gson gson = new Gson();
+                Type listOfRecipes = new TypeToken<List<Recipe>>(){}.getType();
+                recipes = gson.fromJson(recipesString, listOfRecipes);
+            }
+            // Here we notify the fragment to reset the player.
+            RecipeStepDetailFragment.upWasClicked = RecipeStepDetailActivity.NO_VALUE;
         }
 
         createFragment(recipes, position);
@@ -72,6 +94,30 @@ public class RecipeDetailActivity extends AppCompatActivity{
                 }
             }
         });
+
+        //Here we provide navigation to the parent activity.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    /**
+     * Here we save the position and the recipes in SharedPreferences to restore them when
+     * we come back from another activity.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Gson gson = new Gson();
+        Type listOfRecipes = new TypeToken<List<Recipe>>(){}.getType();
+        String recipeString = gson.toJson(recipes, listOfRecipes);
+
+        SharedPreferences sharedPreferences =
+                getSharedPreferences(MainActivity.SHARED_PREFERENCE, 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.putInt(MainActivity.POSITION_KEY, position);
+        editor.putString(MainActivity.RECIPES_KEY, recipeString);
+        editor.apply();
     }
 
     /**
